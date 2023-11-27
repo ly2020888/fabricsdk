@@ -1,0 +1,82 @@
+definitions:
+  main.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  main.Message:
+    properties:
+      Args:
+        items:
+          type: string
+        type: array
+      PassWord:
+        type: string
+    type: object
+  main.PutSuccessResponse:
+    properties:
+      message:
+        type: string
+      playload:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /get:
+    post:
+      consumes:
+      - application/json
+      description: 从Fabric blockchain 获取数据
+      parameters:
+      - description: 请求参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.Message'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.PutSuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main.ErrorResponse'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/main.ErrorResponse'
+      summary: 数据查询
+  /put:
+    post:
+      consumes:
+      - application/json
+      description: 将数据上链到Fabric
+      parameters:
+      - description: 请求参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.Message'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.PutSuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main.ErrorResponse'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/main.ErrorResponse'
+      summary: 将数据上链
+swagger: "2.0"
