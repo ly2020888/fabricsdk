@@ -64,6 +64,16 @@ func (s *Server) setupRouter() {
 // @Success 200 {object} PutSuccessResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 502 {object} ErrorResponse
+// @Example request
+// {
+//   "PassWord": "这里填写内建密码",
+//   "Args": ["000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1", "bitcoin first block is here"]
+// }
+// @Example response
+// {
+//   "message": "数据上链成功",
+//   "playload": ""
+// }
 // @Router /put [post]
 func (s *Server) handlePut(ctx *gin.Context) {
 	var msg Message
@@ -73,26 +83,36 @@ func (s *Server) handlePut(ctx *gin.Context) {
 	}
 
 	if Temporary == MD5(msg.PassWord) {
-		playload, err := s.proposer.Query("Createhash", msg.Args)
+		playload, err := s.proposer.Exec("Createhash", msg.Args)
 		if err != nil {
 			s.logger.Error(err)
 		} else {
 			s.logger.Infof("Fabric调用成功, 合约参数为:%v", msg.Args)
 		}
-		ctx.JSON(http.StatusOK, gin.H{"message": "数据上链", "playload": string(playload)})
+		ctx.JSON(http.StatusOK, gin.H{"message": "数据上链成功", "playload": string(playload)})
 	} else {
 		ctx.JSON(http.StatusBadGateway, gin.H{"message": "密码错误，拒绝访问"})
 	}
 }
 
 // @Summary 数据查询
-// @Description 从Fabric blockchain 获取数据
+// @Description 从 Fabric blockchain 获取数据
 // @Accept json
 // @Produce json
 // @Param request body Message true "请求参数"
 // @Success 200 {object} PutSuccessResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 502 {object} ErrorResponse
+// @Example request
+// {
+//   "PassWord": "这里填写内建密码",
+//   "Args": ["000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1"]
+// }
+// @Example response
+// {
+//   "message": "数据查询成功",
+//   "payload": "bitcoin first block is here"
+// }
 // @Router /get [post]
 func (s *Server) handleGet(ctx *gin.Context) {
 	var msg Message
@@ -109,7 +129,7 @@ func (s *Server) handleGet(ctx *gin.Context) {
 			s.logger.Infof("Fabric调用成功, 合约参数为:%v", msg.Args)
 		}
 		s.logger.Infof("Fabric调用合约参数为:%v", msg.Args)
-		ctx.JSON(http.StatusOK, gin.H{"message": "数据查询", "playload": string(playload)})
+		ctx.JSON(http.StatusOK, gin.H{"message": "数据查询成功", "playload": string(playload)})
 	} else {
 		ctx.JSON(http.StatusBadGateway, gin.H{"message": "密码错误，拒绝访问"})
 	}

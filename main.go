@@ -18,8 +18,8 @@ import (
 var Temporary string
 
 type Message struct {
-	PassWord string   `json:"PassWord"`
-	Args     []string `json:"Args"`
+	PassWord string   `json:"PassWord" swaggertype:"string" example:"31e934ff763ae46"`
+	Args     []string `json:"Args" swaggertype:"string"  example:"['000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1', 'bitcoin first block is here']"`
 }
 
 var (

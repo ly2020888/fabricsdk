@@ -17,7 +17,7 @@ const docTemplate = `{
     "paths": {
         "/get": {
             "post": {
-                "description": "从Fabric blockchain 获取数据",
+                "description": "从 Fabric blockchain 获取数据",
                 "consumes": [
                     "application/json"
                 ],
@@ -115,13 +115,12 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "Args": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                    "type": "string",
+                    "example": "['000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1', 'bitcoin first block is here']"
                 },
                 "PassWord": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "31e934ff763ae46"
                 }
             }
         },

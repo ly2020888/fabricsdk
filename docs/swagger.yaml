@@ -7,10 +7,11 @@ definitions:
   main.Message:
     properties:
       Args:
-        items:
-          type: string
-        type: array
+        example: '[''000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1'', ''bitcoin
+          first block is here'']'
+        type: string
       PassWord:
+        example: 31e934ff763ae46
         type: string
     type: object
   main.PutSuccessResponse:
@@ -27,7 +28,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: 从Fabric blockchain 获取数据
+      description: 从 Fabric blockchain 获取数据
       parameters:
       - description: 请求参数
         in: body

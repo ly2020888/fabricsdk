@@ -57,15 +57,15 @@ func (ps *Proposer) Exec(fcn string, Args []string) ([]byte, error) {
 		Args:        argsAsBytes,
 	})
 	if err != nil {
-		ps.logger.Errorf("Failed to query: %v\n", err)
+		ps.logger.Errorf("Failed to Execute: %v\n", err)
 		return nil, err
 	}
 
 	// 处理查询结果
 	if response.ChaincodeStatus != 200 {
-		ps.logger.Errorf("Chaincode query failed with status: %d - %s\n", response.ChaincodeStatus, string(response.Payload))
+		ps.logger.Errorf("Chaincode Execute failed with status: %d - %s\n", response.ChaincodeStatus, string(response.Payload))
 		return nil, err
 	}
-	ps.logger.Infof("Smart Contract Output: %s\n", string(response.Payload))
+	ps.logger.Infof(" Output: %s\n", string(response.Payload))
 	return response.Payload, nil
 }
