@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -85,11 +86,12 @@ func (s *Server) handlePut(ctx *gin.Context) {
 	if Temporary == MD5(msg.PassWord) {
 		playload, err := s.proposer.Exec("Createhash", msg.Args)
 		if err != nil {
-			s.logger.Error(err)
+			ctx.JSON(http.StatusOK, gin.H{"message": "数据上链失败", "error": fmt.Sprint(err)})
 		} else {
 			s.logger.Infof("Fabric调用成功, 合约参数为:%v", msg.Args)
+			ctx.JSON(http.StatusOK, gin.H{"message": "数据上链成功", "playload": string(playload)})
+
 		}
-		ctx.JSON(http.StatusOK, gin.H{"message": "数据上链成功", "playload": string(playload)})
 	} else {
 		ctx.JSON(http.StatusBadGateway, gin.H{"message": "密码错误，拒绝访问"})
 	}
@@ -124,12 +126,13 @@ func (s *Server) handleGet(ctx *gin.Context) {
 	if Temporary == MD5(msg.PassWord) {
 		playload, err := s.proposer.Query("Queryhash", msg.Args)
 		if err != nil {
-			s.logger.Error(err)
+			ctx.JSON(http.StatusOK, gin.H{"message": "数据查询失败", "error": fmt.Sprint(err)})
 		} else {
 			s.logger.Infof("Fabric调用成功, 合约参数为:%v", msg.Args)
+			ctx.JSON(http.StatusOK, gin.H{"message": "数据查询成功", "playload": string(playload)})
+
 		}
 		s.logger.Infof("Fabric调用合约参数为:%v", msg.Args)
-		ctx.JSON(http.StatusOK, gin.H{"message": "数据查询成功", "playload": string(playload)})
 	} else {
 		ctx.JSON(http.StatusBadGateway, gin.H{"message": "密码错误，拒绝访问"})
 	}

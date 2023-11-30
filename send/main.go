@@ -16,9 +16,9 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 	data := map[string]interface{}{
 		"PassWord": "123",
-		"Args":     []string{"123", "hah"},
+		"Args":     []string{"1231123", "hah", ">>>"},
 	}
-	PostJson("http://localhost:8080/get", data, r)
+	PostJson("http://localhost:8080/put", data, r)
 
 }
 
