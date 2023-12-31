@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -50,7 +49,6 @@ func (s *Server) setupRouter() {
 	gin.SetMode(gin.ReleaseMode)
 	s.router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	s.logger.Infof("已经连接至Fabic网络, 等待指令...")
-	LastSubmissionTime = time.Now().Format(time.RFC3339)
 
 	s.router.POST("/put", s.handlePut)
 	s.router.POST("/get", s.handleGet)
@@ -92,7 +90,6 @@ func (s *Server) handlePut(ctx *gin.Context) {
 		} else {
 			s.logger.Infof("Fabric调用成功, 合约参数为:%v", msg.Args)
 			ctx.JSON(http.StatusOK, gin.H{"message": "数据上链成功", "playload": string(playload)})
-			LastSubmissionTime = time.Now().Format(time.RFC3339)
 		}
 	} else {
 		ctx.JSON(http.StatusBadGateway, gin.H{"message": "密码错误，拒绝访问"})
@@ -132,7 +129,6 @@ func (s *Server) handleGet(ctx *gin.Context) {
 		} else {
 			s.logger.Infof("Fabric调用成功, 合约参数为:%v", msg.Args)
 			ctx.JSON(http.StatusOK, gin.H{"message": "数据查询成功", "playload": string(playload)})
-			LastSubmissionTime = time.Now().Format(time.RFC3339)
 
 		}
 		s.logger.Infof("Fabric调用合约参数为:%v", msg.Args)

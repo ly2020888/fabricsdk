@@ -17,10 +17,6 @@ const (
 	clientSecret = "1111_test"
 )
 
-var (
-	LastSubmissionTime string
-)
-
 type RequestBody struct {
 	MaxTransactionsPS        int `json:"maxTransactionsPS"`
 	AverageThroughput        int `json:"averageThroughput"`
