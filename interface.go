@@ -35,11 +35,11 @@ func ScheduledPush(logger *log.Logger) {
 		<-ticker.C
 
 		// Prepare data for the POST request
-		maxTransactionsPS := 100
-		averageThroughput := rand.Intn(100)
-		numOfDataEntries := 1000
-		numOfBCInstructForDrones := 100
-		numOfDroneSA := rand.Intn(4)
+		maxTransactionsPS := 180            //每秒最大交易数量
+		averageThroughput := rand.Intn(100) //平均吞吐率
+		numOfDataEntries := 946             // 区块链上链的数据数量
+		numOfBCInstructForDrones := 269     //无人机区块链指令数量
+		numOfDroneSA := 4                   //无人机安全关联的数量
 
 		// Prepare data for the POST request
 		requestData := RequestBody{
