@@ -18,12 +18,12 @@ import (
 var Temporary string
 
 type Message struct {
-	PassWord string   `json:"PassWord" swaggertype:"string" example:"31e934ff763ae46"`
+	PassWord string   `json:"PassWord" swaggertype:"string" example:"123"`
 	Args     []string `json:"Args" swaggertype:"string"  example:"['000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1', 'bitcoin first block is here']"`
 }
 
 var (
-	app  = kingpin.New("tapePlus", "Efficient TAPE-based client")
+	app  = kingpin.New("tapePlus", "Efficient Fabric-SDK-based client")
 	run  = app.Command("run", "Start the tapePlus program").Default()
 	pw   = run.Flag("password", "A memory key that needs to be set").Required().Short('p').String()
 	name = run.Flag("chaincode", "chaincode name").Short('n').Default("fabcar").String()
