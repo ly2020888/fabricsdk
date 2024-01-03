@@ -11,7 +11,7 @@ definitions:
           first block is here'']'
         type: string
       PassWord:
-        example: 31e934ff763ae46
+        example: 123
         type: string
     type: object
   main.PutSuccessResponse:

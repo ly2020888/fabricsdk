@@ -120,7 +120,7 @@ const docTemplate = `{
                 },
                 "PassWord": {
                     "type": "string",
-                    "example": "31e934ff763ae46"
+                    "example": "123"
                 }
             }
         },
