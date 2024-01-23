@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	apiURL       = "http://120.236.202.46:18301/university/open/kt2/blockchain/performance"
+	apiURL       = "http://192.168.10.201:8077/university/open/kt2/blockchain/performance"
 	clientID     = "1"
 	clientSecret = "1111_test"
 )
