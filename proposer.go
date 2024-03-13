@@ -47,14 +47,10 @@ func (ps *Proposer) Query(fcn string, Args []string) ([]byte, error) {
 func (ps *Proposer) Exec(fcn string, Args [][]byte) ([]byte, error) {
 	ps.logger.Infof("Start sending transactions.")
 
-	var argsAsBytes [][]byte
-	for _, arg := range Args {
-		argsAsBytes = append(argsAsBytes, []byte(arg))
-	}
 	response, err := ps.worker.Execute(channel.Request{
 		ChaincodeID: ps.chancode,
 		Fcn:         fcn,
-		Args:        argsAsBytes,
+		Args:        Args,
 	})
 	if err != nil {
 		ps.logger.Errorf("Failed to Execute: %v\n", err)

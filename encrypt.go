@@ -62,7 +62,7 @@ func SignWithTime(timestamp time.Time) (time.Time, string) {
 	}
 
 	// 将时间戳转换为字节数组
-	timestampBytes := []byte(fmt.Sprintf("%d", timestamp))
+	timestampBytes := []byte(fmt.Sprintf("%v", timestamp))
 
 	// 使用ECDSA私钥签名时间戳
 	signature, err := signData(privateKey, timestampBytes)

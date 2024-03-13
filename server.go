@@ -111,7 +111,7 @@ func (s *Server) handlePutFile(c *gin.Context) {
 			playload, err = s.proposer.Exec("UploadFile", Args)
 			if err != nil {
 				c.String(500, "Failed to Upload file to blockchain: "+err.Error())
-
+				return
 			}
 
 			c.String(200, "File uploaded successfully: "+filename+string(playload))
