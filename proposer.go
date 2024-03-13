@@ -44,7 +44,7 @@ func (ps *Proposer) Query(fcn string, Args []string) ([]byte, error) {
 	return response.Payload, nil
 }
 
-func (ps *Proposer) Exec(fcn string, Args []string) ([]byte, error) {
+func (ps *Proposer) Exec(fcn string, Args [][]byte) ([]byte, error) {
 	ps.logger.Infof("Start sending transactions.")
 
 	var argsAsBytes [][]byte
