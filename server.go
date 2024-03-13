@@ -55,7 +55,7 @@ func (s *Server) setupRouter() {
 
 	s.router.POST("/put", s.handlePut)
 	s.router.POST("/get", s.handleGet)
-	s.router.POST("/getfile", s.handleGetFile)
+	s.router.GET("/getfile", s.handleGetFile)
 	s.router.POST("/putfile", s.handlePutFile)
 
 	s.router.GET("/ping", func(c *gin.Context) {
@@ -91,6 +91,7 @@ func (s *Server) handlePutFile(c *gin.Context) {
 		return
 	}
 
+	// blockchain
 	var Args []string
 	Args = append(Args, filename)
 	playload, err := s.proposer.Query("KeyExists", Args)
@@ -113,11 +114,11 @@ func (s *Server) handlePutFile(c *gin.Context) {
 				c.String(500, "Failed to Upload file to blockchain: "+err.Error())
 				return
 			}
-
 			c.String(200, "File uploaded successfully: "+filename+string(playload))
+
 		}
 	}
-
+	c.String(200, "File uploaded successfully: "+filename)
 }
 
 // @Summary 下载文件
@@ -127,7 +128,7 @@ func (s *Server) handlePutFile(c *gin.Context) {
 // @Param filename path string true "要下载的文件名"
 // @Success 200 {file} octet-stream "文件流"
 // @Failure 404 {string} string "文件未找到"
-// @Router /getfile/{filename} [POST]
+// @Router /getfile/{filename} [GET]
 func (s *Server) handleGetFile(c *gin.Context) {
 	filename := c.Param("filename")
 	file, err := os.Open(filepath.Join("files", filename))

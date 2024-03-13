@@ -18,7 +18,7 @@ func main() {
 }
 
 func TestGetFile() {
-	filename := "testfile.txt"
+	filename := "testfile_download.txt"
 	// 创建目标文件
 	outFile, err := os.Create(filename)
 	if err != nil {
@@ -28,7 +28,7 @@ func TestGetFile() {
 	defer outFile.Close()
 
 	// 发送 HTTP GET 请求下载文件
-	response, err := http.Get(GET_FILE_URL + filename)
+	response, err := http.Get(GET_FILE_URL + "?" + filename)
 	if err != nil {
 		fmt.Println("Failed to download file:", err)
 		return
@@ -52,7 +52,7 @@ func TestGetFile() {
 }
 
 func TestSendFile() {
-	file, err := os.Open("testfile.txt") // 替换为你要上传的文件路径
+	file, err := os.Open("keti3model.txt") // 替换为你要上传的文件路径
 	if err != nil {
 		fmt.Println("Failed to open file:", err)
 		return

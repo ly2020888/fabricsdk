@@ -11,7 +11,7 @@ definitions:
           first block is here'']'
         type: string
       PassWord:
-        example: 123
+        example: "123"
         type: string
     type: object
   main.PutSuccessResponse:
@@ -52,6 +52,29 @@ paths:
           schema:
             $ref: '#/definitions/main.ErrorResponse'
       summary: 数据查询
+  /getfile/{filename}:
+    get:
+      consumes:
+      - application/json
+      description: 从服务器下载指定文件
+      parameters:
+      - description: 要下载的文件名
+        in: path
+        name: filename
+        required: true
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: 文件流
+          schema:
+            type: file
+        "404":
+          description: 文件未找到
+          schema:
+            type: string
+      summary: 下载文件
   /put:
     post:
       consumes:
@@ -80,4 +103,31 @@ paths:
           schema:
             $ref: '#/definitions/main.ErrorResponse'
       summary: 将数据上链
+  /putfile:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 从客户端上传文件到服务器并将文件存储到本地和区块链中
+      parameters:
+      - description: 文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 文件上传成功
+          schema:
+            type: string
+        "400":
+          description: 请求错误
+          schema:
+            type: string
+        "500":
+          description: 服务器内部错误
+          schema:
+            type: string
+      summary: 上传文件
 swagger: "2.0"

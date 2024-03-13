@@ -2,3 +2,4 @@ organizations
 keystore
 *.exe
 main
+.DS_Store
