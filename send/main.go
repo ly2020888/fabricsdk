@@ -14,11 +14,28 @@ func main() {
 
 	r := gin.Default()
 	gin.SetMode(gin.ReleaseMode)
+
+	// 指定txt文件的路径
+	filePath := "./keti3model.txt"
+
+	// 读取文件内容
+	content, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		fmt.Println("无法读取文件:", err)
+		return
+	}
+
+	// 将文件内容转换为字符串
+	fileContent := string(content)
+
+	// 打印字符串内容
+	fmt.Println("文件内容：")
+	fmt.Println(fileContent)
 	data := map[string]interface{}{
 		"PassWord": "123",
-		"Args":     []string{"123", "hah"},
+		"Args":     []string{"keti3model", fileContent},
 	}
-	PostJson("http://localhost:8080/get", data, r)
+	PostJson("http://localhost:8080/put", data, r)
 
 }
 
