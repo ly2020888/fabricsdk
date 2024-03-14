@@ -35,7 +35,7 @@ func main() {
 		"PassWord": "123",
 		"Args":     []string{"keti3model", fileContent},
 	}
-	PostJson("http://localhost:8080/put", data, r)
+	PostJson("http://localhost:8085/put", data, r)
 
 }
 

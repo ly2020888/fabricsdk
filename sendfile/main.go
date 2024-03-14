@@ -9,8 +9,8 @@ import (
 	"os"
 )
 
-const PUT_FILE_URL = "http://localhost:8080/putfile/"
-const GET_FILE_URL = "http://localhost:8080/getfile/"
+const PUT_FILE_URL = "http://localhost:8085/putfile/"
+const GET_FILE_URL = "http://localhost:8085/getfile/"
 
 func main() {
 	TestSendFile()
@@ -18,9 +18,9 @@ func main() {
 }
 
 func TestGetFile() {
-	filename := "testfile_download.txt"
+	filename := "keti3model.txt"
 	// 创建目标文件
-	outFile, err := os.Create(filename)
+	outFile, err := os.Create("testdownload.txt")
 	if err != nil {
 		fmt.Println("Failed to create file:", err)
 		return
@@ -28,7 +28,7 @@ func TestGetFile() {
 	defer outFile.Close()
 
 	// 发送 HTTP GET 请求下载文件
-	response, err := http.Get(GET_FILE_URL + "?" + filename)
+	response, err := http.Get(GET_FILE_URL + "?filename=" + filename)
 	if err != nil {
 		fmt.Println("Failed to download file:", err)
 		return
@@ -37,7 +37,7 @@ func TestGetFile() {
 
 	// 检查 HTTP 状态码
 	if response.StatusCode != http.StatusOK {
-		fmt.Println("Server returned non-200 status code:", response.Status)
+		fmt.Printf("Server returned non-200 status code:%v", response)
 		return
 	}
 
@@ -64,7 +64,7 @@ func TestSendFile() {
 	writer := multipart.NewWriter(&requestBody)
 
 	// 创建一个文件表单字段
-	fileField, err := writer.CreateFormFile("file", "testfile.txt")
+	fileField, err := writer.CreateFormFile("file", "keti3model.txt")
 	if err != nil {
 		fmt.Println("Failed to create form file:", err)
 		return

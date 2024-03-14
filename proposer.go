@@ -17,7 +17,7 @@ func CreateProposer(chancode string, sdk *channel.Client, logger *log.Logger) *P
 }
 
 func (ps *Proposer) Query(fcn string, Args []string) ([]byte, error) {
-	ps.logger.Infof("Start sending transactions.")
+	ps.logger.Infof("Start sending Query transactions.")
 
 	var argsAsBytes [][]byte
 	for _, arg := range Args {
@@ -45,7 +45,7 @@ func (ps *Proposer) Query(fcn string, Args []string) ([]byte, error) {
 }
 
 func (ps *Proposer) Exec(fcn string, Args [][]byte) ([]byte, error) {
-	ps.logger.Infof("Start sending transactions.")
+	ps.logger.Infof("Start sending Exec transactions.")
 
 	response, err := ps.worker.Execute(channel.Request{
 		ChaincodeID: ps.chancode,

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -63,6 +64,39 @@ func (s *Server) setupRouter() {
 	})
 }
 
+func SaveFileAndGetBytes(file multipart.File, header *multipart.FileHeader) ([]byte, error) {
+	// 确保关闭文件
+	defer file.Close()
+
+	// 从 header 中获取文件名
+	filename := header.Filename
+
+	// 创建文件保存路径
+	filePath := filepath.Join("files", filename)
+
+	// 创建一个文件，准备将数据写入其中
+	out, err := os.Create(filePath)
+	if err != nil {
+		return nil, err
+	}
+	defer out.Close()
+
+	// 将文件内容写入到文件中
+	_, err = io.Copy(out, file)
+	if err != nil {
+		return nil, err
+	}
+
+	// 读取文件内容到字节切片中
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		return nil, err
+	}
+
+	// 返回文件内容的字节切片
+	return data, nil
+}
+
 // @Summary 上传文件
 // @Description 从客户端上传文件到服务器并将文件存储到本地和区块链中
 // @Accept multipart/form-data
@@ -79,18 +113,12 @@ func (s *Server) handlePutFile(c *gin.Context) {
 		return
 	}
 	filename := header.Filename
-	out, err := os.Create(filepath.Join("files", filename))
-	if err != nil {
-		c.String(500, "Failed to create file: "+err.Error())
-		return
-	}
-	defer out.Close()
-	_, err = io.Copy(out, file)
-	if err != nil {
-		c.String(500, "Failed to save file: "+err.Error())
-		return
-	}
 
+	filedata, err := SaveFileAndGetBytes(file, header)
+	if err != nil {
+		c.String(500, "Failed to write file: "+err.Error())
+		return
+	}
 	// blockchain
 	var Args []string
 	Args = append(Args, filename)
@@ -99,17 +127,13 @@ func (s *Server) handlePutFile(c *gin.Context) {
 		s.logger.Error(err)
 	} else {
 		if string(playload) == "true" {
-			s.logger.Infof("Fabric调用成功, 文件已经存在:%v", Args)
+			s.logger.Infof("文件已经存在:%v", Args)
 		} else {
-			var Args [][]byte
-			Args = append(Args, []byte(filename))
-			data, err := io.ReadAll(file)
-			if err != nil {
-				s.logger.Errorf("Failed to read multipart file:%v", err)
-				return
-			}
-			Args = append(Args, []byte(data))
-			playload, err = s.proposer.Exec("UploadFile", Args)
+
+			byteSliceSlice := [][]byte{[]byte(filename), filedata}
+			s.logger.Infof("文件开始上链:%v", filename)
+
+			playload, err = s.proposer.Exec("Createhash", byteSliceSlice)
 			if err != nil {
 				c.String(500, "Failed to Upload file to blockchain: "+err.Error())
 				return
@@ -130,16 +154,48 @@ func (s *Server) handlePutFile(c *gin.Context) {
 // @Failure 404 {string} string "文件未找到"
 // @Router /getfile/{filename} [GET]
 func (s *Server) handleGetFile(c *gin.Context) {
-	filename := c.Param("filename")
+	filename := c.Query("filename")
+	if filename == "" {
+		s.logger.Error("请求文件名为空")
+		c.String(500, "请求文件名为空 ")
+		return
+	} else {
+		s.logger.Infof("请求文件名为:%s", filename)
+
+	}
+
 	file, err := os.Open(filepath.Join("files", filename))
 	if err != nil {
-		c.String(404, "File not found in local"+err.Error())
-		return
+		s.logger.Infof("本地文件不存在，正在同步缓存...")
+
+		args := []string{filename}
+		playload, err := s.proposer.Query("GetFile", args)
+		if err != nil {
+			s.logger.Errorf("未查到到区块链上有该文件")
+			c.String(500, "未查到到区块链上有该文件")
+			return
+		}
+
+		file, err = os.Create(filename)
+		if err != nil {
+			s.logger.Infof("Failed to create file: %v\n", err)
+			return
+		}
+		defer file.Close()
+
+		_, err = file.Write(playload)
+		if err != nil {
+			s.logger.Infof("Failed to write payload to file: %v\n", err)
+			return
+		}
 	}
 	defer file.Close()
+	s.logger.Infof("区块链客户端节点检测到文件，开始发送%v", filename)
+
 	c.Header("Content-Disposition", "attachment; filename="+filename)
 	c.Header("Content-Type", "application/octet-stream")
 	io.Copy(c.Writer, file)
+
 }
 
 // @Summary 将数据上链
@@ -237,5 +293,5 @@ func (s *Server) handleGet(ctx *gin.Context) {
 func (s *Server) Run() {
 	s.setupRouter()
 	go ScheduledPush(s.logger)
-	s.router.Run(":8080")
+	s.router.Run(":8085")
 }
